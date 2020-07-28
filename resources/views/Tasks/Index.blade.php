@@ -21,11 +21,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($allTasks->tasks as $Task)
+                    @forelse ($allTasks as $Task)
                         <tr>
                             <th scope="row">{{$loop->iteration}}</th>
                             <td>{{$Task->name}}</td>
-                            <td>{{$allTasks->name}}</td>
+                            <td>{{$Task->project->name}}</td>
                             <td>{{$Task->priority}}</td>
                             <td>{{$Task->created_at}}</td>
                             <td>

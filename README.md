@@ -7,6 +7,7 @@ To start the project you should run this commands:
 - php artisan key:generate
 - Create database
 - npm install
+- php artisan migrate
 - php artisan serve
 - npm run watch
 - enjoy ^_^

@@ -61,7 +61,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $allTasks = Project::with("tasks")->where([['id' , $id],['user_id' , Auth::id()]])->first();
+        $allTasks = Task::with("project")->where([['project_id' , $id],['user_id' , Auth::id()]])->orderBy('priority')->get();
         // dd($allTasks);
         return view('Tasks.index',['allTasks' => $allTasks]);
     }
