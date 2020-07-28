@@ -19,9 +19,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/createNewProject',function(){
-    return view('createNewProject');
-});
-// Route::post('/Project')
+Route::resource('/Project',"ProjectController");
+Route::resource('/Tasks',"TaskController");
+
+

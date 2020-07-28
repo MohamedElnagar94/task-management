@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -14,7 +16,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        $projects = Project::with('userName')->where('user_id',Auth::id())->get();
+        // dd($projects);
+        return view('Project.Index',['projects' => $projects]);
     }
 
     /**
@@ -24,7 +28,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('Project.Create');
     }
 
     /**
@@ -35,7 +39,18 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'projectName' => ['required', 'string', 'max:150','min:3'],
+        ],[
+            'projectName.required' => 'The Project Name Field is required',
+            'projectName.max' => 'The Project Name should be more than 3 character and less than 150 character',
+            'projectName.min' => 'The Project Name should be more than 3 character and less than 150 character',
+        ]);
+        Project::create([
+            'name' => $request->projectName,
+            'user_id' => Auth::id()
+        ]);
+        return redirect("/Project")->with('success', 'Project has been added successfully!');
     }
 
     /**
@@ -44,9 +59,11 @@ class ProjectController extends Controller
      * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show($id)
     {
-        //
+        $allTasks = Project::with("tasks")->where([['id' , $id],['user_id' , Auth::id()]])->first();
+        // dd($allTasks);
+        return view('Tasks.index',['allTasks' => $allTasks]);
     }
 
     /**
@@ -55,9 +72,15 @@ class ProjectController extends Controller
      * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function edit($id)
     {
-        //
+        // dd($id);
+        $editProject = Project::where([['id' , $id],['user_id' , Auth::id()]])->get();
+        // dd($editPhone->isEmpty());
+        if ($editProject->isEmpty()) {
+            return redirect("/Project");
+        }
+        return view("Project.Edit",['editProject' => $editProject]);
     }
 
     /**
@@ -67,9 +90,21 @@ class ProjectController extends Controller
      * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, $id)
     {
-        //
+        $update = Project::findOrFail($id);
+        // dd($request->all());
+        $request->validate([
+            'projectName' => ['required', 'string', 'max:150','min:3'],
+        ],[
+            'projectName.required' => 'The Project Name Field is required',
+            'projectName.max' => 'The Project Name should be more than 3 character and less than 150 character',
+            'projectName.min' => 'The Project Name should be more than 3 character and less than 150 character',
+        ]);
+
+        $update->name = $request->projectName;
+        $update->save();
+        return redirect("/Project")->with('success', 'Project has been updated successfully!');
     }
 
     /**
@@ -78,8 +113,10 @@ class ProjectController extends Controller
      * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Project $project)
+    public function destroy($id)
     {
-        //
+        $destroy = Project::findOrFail($id);
+        $destroy->delete();
+        return redirect("/Project");
     }
 }
