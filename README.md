@@ -1,4 +1,4 @@
-## Test Managment Project
+## Tesk Managment Project
 
 To start the project you should run this commands:
 
