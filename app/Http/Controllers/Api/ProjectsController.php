@@ -16,7 +16,6 @@ class ProjectsController extends Controller
     public function index(Request $request)
     {
         $projects = Project::with('userName')->with('tasks')->where('user_id',$request->user_id)->get();
-        // dd($projects);
         return response()->json(["status" => "200",'projects' => $projects],200);
     }
 

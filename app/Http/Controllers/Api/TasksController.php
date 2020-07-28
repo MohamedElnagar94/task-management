@@ -17,7 +17,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-        // return response()->json(["status" => "200"],200);
+        //
     }
 
     /**
@@ -28,9 +28,7 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $max = Task::where([['user_id',$request->user_id],['project_id',$request->projectID]])->max('priority');
-        // dd($max);
         Task::create([
             'project_id' => $request->projectID,
             'name' => $request->taskName,
@@ -49,7 +47,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        // return response()->json(["status" => "200"],200);
+        //
     }
 
     /**
@@ -61,14 +59,11 @@ class TasksController extends Controller
      */
     public function update(Request $request)
     {
-        // dd($request->all());
         $update = Task::findOrFail($request->taskID);
-        // dd($update->phone);
         $update->name = $request->newTask;
         $update->save();
         $projects = Project::with('userName')->with('tasks')->where('user_id',$request->user_id)->get();
         return response()->json(["status" => "200",'projects' => $projects],200);
-        // return response()->json(["status" => "200"],200);
     }
 
     /**
@@ -80,29 +75,18 @@ class TasksController extends Controller
      */
     public function taskOrder(Request $request)
     {
-        // dd($request->taskOrder);
         $priority = array();
         for ($i=0; $i < count($request->taskOrder); $i++) {
-            // $priority[i] = $request->taskOrder[i]['priority'];
             array_push($priority,$request->taskOrder[$i]['priority']);
         }
         sort($priority);
-        // dd($priority);
         for ($i=0; $i < count($request->taskOrder); $i++) {
-            // $priority[i] = $request->taskOrder[i]['priority'];
-            // array_push($priority,$request->taskOrder[$i]['priority']);
             $update = Task::findOrFail($request->taskOrder[$i]['id']);
-            // dd($update);
             $update->priority = $priority[$i];
             $update->save();
         }
-        // $update = Task::findOrFail($request->taskID);
-        // // dd($update->phone);
-        // $update->name = $request->newTask;
-        // $update->save();
         $projects = Project::with('userName')->with('tasks')->where('user_id',$request->user_id)->get();
         return response()->json(["status" => "200",'projects' => $projects],200);
-        // return response()->json(["status" => "200"],200);
     }
 
     /**
@@ -114,11 +98,8 @@ class TasksController extends Controller
     public function destroy(Request $request)
     {
         $destroy = Task::findOrFail($request->taskID);
-        // dd($destroy);
         $destroy->delete();
-        // return redirect("/phones");
         $projects = Project::with('userName')->with('tasks')->where('user_id',$request->user_id)->get();
         return response()->json(["status" => "200",'projects' => $projects],200);
-        // return response()->json(["status" => "200"],200);
     }
 }
